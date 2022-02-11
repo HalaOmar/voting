@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        td{
+            padding: 5px;
+        }
+
+        tr{
+        border: 1px solid black;
+        }
+        #thead{
+
+            font: 1.5em sans-serif;
+        }
+        .active-update{
+            display: inline-block;
+        }
+        .hidden-update{
+            display: none;
+
+        }
+    </style>
+</head>
+<body>
+    <table id="table1">
+        <tbody>
+            <tr id="thead"> 
+                <td>name</td>
+                <td>email</td>
+                <td>phone</td>
+                <td>delete</td>
+                <td>update</td>
+            </tr>
+ <% users.forEach ( user =>  { %>
+            <tr id="updateparent"> 
+                <td class="edit name"> <%= user.name %> </td>
+                <td class="edit email"><%=  user.email %></td>
+                <td class="edit phone"><%= user.phone %></td>
+                <td>     
+                <form id="deleteuser" action="/deleteuser" method="post">
+
+                    <input id="usid" type="text" value='<%= user.user_id %>' name="userid" hidden>
+                    <input type="submit" value="DELETE">
+                </form>
+
+                </td>
+                <td >
+                    <form id="updateuser" action="/updateuser" method="post"  >
+
+                    <input type="text" value='' name="name" class="newname" hidden>
+                    <input type="text" value='' name="email" class="newemail" hidden>
+                    <input type="text" value='' name="phone" class="newphone" hidden>
+                    <input type="text" value='' name="userid" class="newuserid" hidden>
+                     <input class="sendnewuser hidden-update" type="submit" value="Post on Server">   
+                        
+                    </form>
+                    <input id="update" type="submit" value="UPDATE">
+
+                </td>
+            </tr>
+      <% }); %>
+        </tbody>
+    </table>
+
+
+    <form id="updateuser" action="/updateuser" method="post"></form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+    <script>
+
+$(document).ready(function(){
+
+$('#update').on('click',function(){
+
+        $('.sendnewuser')[0].classList.remove('hidden-update')
+        $('.sendnewuser')[0].classList.add('active-update')
+
+        var elements=$(this).parents('#updateparent').children('.edit')
+
+        console.log(` object :>> ${ typeof elements}`);
+
+
+        for (const element of elements) {
+        element.setAttribute('contenteditable' ,true)
+        // var price=$(this).parents('.foredit').children('.editprice').text()
+        // $('.price').val(price)
+        console.log(` object :>> ${ element}`);  
+        }
+    
+// var cartdisc=$(this).parents('.foredit').children('.cartdisc').text()
+// $('.cartdisc').val(cartdisc)
+// var category=$(this).parents('.foredit').children('.editcategory').text()
+// $('.category-to-edit').val(category)
+// var productid = $(this).attr('data-index')
+// $('#edit_Byid').val(productid)
+// var img = $(this).parents('.foredit').children('.image').text()
+// $('.edit-img').text=img
+
+// $('#editmodal').modal('show');
+})
+
+$('.sendnewuser').on('click',function(){
+
+var nm=$(this).parents('#updateparent').children('.name').text()
+$('.newname').val(nm)
+var ph=$(this).parents('#updateparent').children('.phone').text()
+$('.newphone').val(ph)
+var em=$(this).parents('#updateparent').children('.email').text()
+$('.newemail').val(em)
+var uid=$('#usid').val()
+alert(uid)
+$('.newuserid').val(uid)
+
+let updateform = document.getElementById('updateuser')
+let formData=new FormData(updateform)
+let usertoupdate=Object.fromEntries(formData.entries())
+console.log(` object :>> ${ usertoupdate.userid }`);
+$.ajax({
+                url: `/updateuser`,
+                type: 'POST',
+                data:JSON.stringify(usertoupdate),
+                contentType:'application/json; charset=utf-8 ',
+                dataType: 'json',
+                async: false,
+                success: function(msg) {
+                    alert(msg);
+                }
+            });
+
+})
+});
+
+
+    </script>
+</body>
+</html>
