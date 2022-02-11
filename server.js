@@ -2,7 +2,7 @@ import express from 'express'
 import podyParser from 'body-parser'
 import path  from 'path'
 import competitions_router from './routers/competitionsRouter.js'
-import bodyParser from 'body-parser'
+
 
 
 
